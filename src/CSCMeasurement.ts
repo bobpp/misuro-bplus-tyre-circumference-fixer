@@ -74,7 +74,7 @@ export class CSCMeasurement {
       }
     })(this._lastWheelEventTime, before.lastWheelEventTime);
 
-    const speed = distance / time * 3600 / 1000
+    const speed = distance / time * 3600 / 1000 || 0
 
     debug(`distance -> ${distance} m`)
     debug(`time -> ${time} sec`)
