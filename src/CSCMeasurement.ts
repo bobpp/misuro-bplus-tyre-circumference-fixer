@@ -61,10 +61,24 @@ export class CSCMeasurement {
    * @returns km/h の時速を返却する
    */
   public calculateSpeed(before: CSCMeasurement, tyrePerimeter: number): number {
-    let distance = (this._cumulativeWheelRevolutions - before.cumulativeWheelRevolutions) * tyrePerimeter
-    let time = (this._lastWheelEventTime - before.lastWheelEventTime) / 1024
+    const distance = (this._cumulativeWheelRevolutions - before.cumulativeWheelRevolutions) * tyrePerimeter
+    const time = ((currentLastWheelEventTime, beforeLastWheelEventTime) => {
+      if (currentLastWheelEventTime == beforeLastWheelEventTime) {
+        return 0
+      }
+      else if (currentLastWheelEventTime > beforeLastWheelEventTime) {
+        return (this._lastWheelEventTime - before.lastWheelEventTime) / 1024
+      }
+      else {
+        return ((65536 - beforeLastWheelEventTime) + currentLastWheelEventTime) / 1024
+      }
+    })(this._lastWheelEventTime, before.lastWheelEventTime);
+
+    const speed = distance / time * 3600 / 1000
+
     debug(`distance -> ${distance} m`)
     debug(`time -> ${time} sec`)
-    return distance / time * 3600 / 1000
+    debug(`speed -> ${speed} km/h`)
+    return speed
   }
 }
