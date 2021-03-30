@@ -42,7 +42,8 @@ noble.on('discover', async (peripheral: Peripheral) => {
       beforeCSCMeasurement = currentCSCMeasurement
     })
     cscMeasurementCharacteristic.subscribe()
-
-    setInterval(async () => { true }, 500)
   }
+
+  // Main Loop
+  setInterval(async () => { true }, 500)
 })
