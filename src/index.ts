@@ -37,7 +37,7 @@ noble.on('discover', async (peripheral: Peripheral) => {
     cscMeasurementCharacteristic.on('read', async (data: Uint8Array, isNotification: boolean) => {
       let currentCSCMeasurement = new CSCMeasurement(data)
       if (beforeCSCMeasurement) {
-        console.log(`${currentCSCMeasurement.calculateSpeed(beforeCSCMeasurement, 0.08)} km/h`)
+        console.log(`${new Date().toUTCString()} ${currentCSCMeasurement.calculateSpeed(beforeCSCMeasurement, 0.08)} km/h`)
       }
       beforeCSCMeasurement = currentCSCMeasurement
     })
