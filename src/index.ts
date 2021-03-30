@@ -3,11 +3,11 @@ import { CSCMeasurement } from "./CSCMeasurement"
 
 const noble = require('@abandonware/noble')
 
-const cscServiceUuid = '0x1816'
+const CSC_SERVICE_UUID = '0x1816'
 
 noble.on('stateChange', async (state: string) => {
   if (state === 'poweredOn') {
-    await noble.startScanningAsync([cscServiceUuid], false)
+    await noble.startScanningAsync([CSC_SERVICE_UUID], false)
   }
 })
 
@@ -17,7 +17,7 @@ noble.on('discover', async (peripheral: Peripheral) => {
   console.log(`${peripheral.address} (${peripheral.advertisement.localName})`)
 
   const {characteristics} = await peripheral.discoverSomeServicesAndCharacteristicsAsync(
-    [cscServiceUuid],
+    [CSC_SERVICE_UUID],
     ['0x2A5B', '0x2A5C']
   )
 
