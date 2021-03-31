@@ -1,5 +1,5 @@
 import { Peripheral } from "@abandonware/noble"
-import { CSCMeasurement } from "./CSCMeasurement"
+import { CSCMeasurement } from "./model/CSCMeasurement"
 
 const noble = require('@abandonware/noble')
 

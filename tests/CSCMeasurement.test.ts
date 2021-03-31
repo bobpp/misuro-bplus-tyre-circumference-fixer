@@ -1,4 +1,4 @@
-import { CSCMeasurement } from "../src/CSCMeasurement"
+import { CSCMeasurement } from "../src/model/CSCMeasurement"
 
 describe('CSCMeasurement', (): void => {
   test('Parse', (): void => {
