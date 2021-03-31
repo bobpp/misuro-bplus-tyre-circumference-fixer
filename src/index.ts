@@ -1,13 +1,12 @@
 import { Peripheral } from "@abandonware/noble"
 import { CSCMeasurement } from "./model/CSCMeasurement"
+import { Constants } from "./Constants"
 
 const noble = require('@abandonware/noble')
 
-const CSC_SERVICE_UUID = '0x1816'
-
 noble.on('stateChange', async (state: string) => {
   if (state === 'poweredOn') {
-    await noble.startScanningAsync([CSC_SERVICE_UUID], false)
+    await noble.startScanningAsync([Constants.CSC_SERVICE_UUID], false)
   }
 })
 
@@ -17,8 +16,11 @@ noble.on('discover', async (peripheral: Peripheral) => {
   console.log(`${peripheral.address} (${peripheral.advertisement.localName})`)
 
   const {characteristics} = await peripheral.discoverSomeServicesAndCharacteristicsAsync(
-    [CSC_SERVICE_UUID],
-    ['0x2A5B', '0x2A5C']
+    [Constants.CSC_SERVICE_UUID],
+    [
+      Constants.CSC_CHARACTERISTICS.CSC_MEASUREMENT_UUID,
+      Constants.CSC_CHARACTERISTICS.CSC_FEATURE_UUID,
+    ]
   )
 
   // Check Features
