@@ -1,0 +1,13 @@
+import { Constants } from "../Constants"
+
+const bleno = require('@abandonware/bleno')
+
+export class CSCFeatureCharacteristic extends bleno.Characteristic {
+  constructor () {
+    super({
+      uuid: Constants.CSC_CHARACTERISTICS.CSC_FEATURE_UUID,
+      properties: ['read'],
+      value: Buffer.from([2])
+    })
+  }
+}
