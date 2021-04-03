@@ -7,20 +7,40 @@ export class CSCMeasurement {
   private _cumulativeCrankRevolutions: number
   private _lastCrankEventTime: number
 
-  constructor (rawBinary: Uint8Array) {
-    const uint8ArrayLittleEndianToNumber = function(array: Uint8Array): number {
-      let returnValue: number = array[0]
-      for (let i: number = 1; i < array.length; i++) {
-        returnValue += array[i] * Math.pow(256, i)
-      }
-      return returnValue
+  static uint8ArrayLittleEndianToNumber(array: Uint8Array): number {
+    let returnValue: number = array[0]
+    for (let i = 1; i < array.length; i++) {
+      returnValue += array[i] * Math.pow(256, i)
     }
+    return returnValue
+  }
 
-    this._flags = rawBinary[0]
-    this._cumulativeWheelRevolutions = uint8ArrayLittleEndianToNumber(rawBinary.slice(1, 5))
-    this._lastWheelEventTime = uint8ArrayLittleEndianToNumber(rawBinary.slice(5, 7))
-    this._cumulativeCrankRevolutions = uint8ArrayLittleEndianToNumber(rawBinary.slice(7, 9))
-    this._lastCrankEventTime = uint8ArrayLittleEndianToNumber(rawBinary.slice(9, 11))
+  static numberToLittleEndianUint8Array(num: number, length: number): Uint8Array {
+    let littleEndianArray: Uint8Array = new Uint8Array(length)
+    for (let i: number = length - 1; i >= 0; i--) {
+      const x = Math.pow(256, i)
+      littleEndianArray[i] = num / x
+      num = num % x
+    }
+    return littleEndianArray
+  }
+
+  static buildFromRawBinary(rawBinary: Uint8Array): CSCMeasurement {
+    return new CSCMeasurement(
+      rawBinary[0],
+      CSCMeasurement.uint8ArrayLittleEndianToNumber(rawBinary.slice(1, 5)),
+      CSCMeasurement.uint8ArrayLittleEndianToNumber(rawBinary.slice(5, 7)),
+      CSCMeasurement.uint8ArrayLittleEndianToNumber(rawBinary.slice(7, 9)),
+      CSCMeasurement.uint8ArrayLittleEndianToNumber(rawBinary.slice(9, 11)),
+    )
+  }
+
+  constructor (flags: number, cumulativeWheelRevolutions: number, lastWheelEventTime: number, cumulativeCrankRevolutions: number, lastCrankEventTime: number) {
+    this._flags = flags
+    this._cumulativeWheelRevolutions = cumulativeWheelRevolutions
+    this._lastWheelEventTime = lastWheelEventTime
+    this._cumulativeCrankRevolutions = cumulativeCrankRevolutions
+    this._lastCrankEventTime = lastCrankEventTime
   }
 
   public values(): Array<number> {
@@ -80,5 +100,40 @@ export class CSCMeasurement {
     debug(`time -> ${time} sec`)
     debug(`speed -> ${speed} km/h`)
     return speed
+  }
+
+  public toBinaryBuffer(): Buffer {
+    let bufferArray: Uint8Array = new Uint8Array(11)
+    bufferArray[0] = this._flags
+    const convertedCumulativeWheelRevolutions = CSCMeasurement.numberToLittleEndianUint8Array(
+      this._cumulativeWheelRevolutions,
+      4
+    )
+    for (let i = 0; i < 4; i++) {
+      bufferArray[1 + i] = convertedCumulativeWheelRevolutions[i]
+    }
+    const convertedLastWheelEventTime = CSCMeasurement.numberToLittleEndianUint8Array(
+      this._lastWheelEventTime,
+      2
+    )
+    for (let i = 0; i < 2; i++) {
+      bufferArray[5 + i] = convertedLastWheelEventTime[i]
+    }
+    const convertedCumulativeCrankRevolutions = CSCMeasurement.numberToLittleEndianUint8Array(
+      this._cumulativeCrankRevolutions,
+      2
+    )
+    for (let i = 0; i < 2; i++) {
+      bufferArray[7 + i] = convertedCumulativeCrankRevolutions[i]
+    }
+    const convertedLastCrankEventTime = CSCMeasurement.numberToLittleEndianUint8Array(
+      this._lastCrankEventTime,
+      2
+    )
+    for (let i = 0; i < 2; i++) {
+      bufferArray[9 + i] = convertedLastCrankEventTime[i]
+    }
+
+    return Buffer.from(bufferArray)
   }
 }

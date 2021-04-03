@@ -37,7 +37,7 @@ noble.on('discover', async (peripheral: Peripheral) => {
     const cscMeasurementCharacteristic = characteristics[0]
     let beforeCSCMeasurement: CSCMeasurement | null = null
     cscMeasurementCharacteristic.on('read', async (data: Uint8Array, isNotification: boolean) => {
-      let currentCSCMeasurement = new CSCMeasurement(data)
+      let currentCSCMeasurement = CSCMeasurement.buildFromRawBinary(data)
       if (beforeCSCMeasurement) {
         console.log(`${new Date().toUTCString()} ${currentCSCMeasurement.calculateSpeed(beforeCSCMeasurement, 0.08)} km/h`)
       }
