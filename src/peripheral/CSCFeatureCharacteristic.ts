@@ -6,7 +6,7 @@ export class CSCFeatureCharacteristic extends bleno.Characteristic {
     super({
       uuid: Constants.CSC_CHARACTERISTICS.CSC_FEATURE_UUID,
       properties: ["read"],
-      value: Buffer.from([2]),
+      value: Buffer.from([3, 0]),
     });
   }
 }

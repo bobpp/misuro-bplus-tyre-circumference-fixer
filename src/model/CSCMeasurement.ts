@@ -68,6 +68,10 @@ export class CSCMeasurement {
     return this._cumulativeWheelRevolutions;
   }
 
+  set cumulativeWheelRevolutions(rev: number) {
+    this._cumulativeWheelRevolutions = rev;
+  }
+
   get lastWheelEventTime(): number {
     return this._lastWheelEventTime;
   }
@@ -134,5 +138,9 @@ export class CSCMeasurement {
     }
 
     return Buffer.from(bufferArray);
+  }
+
+  public isStopped(before: CSCMeasurement): boolean {
+    return this._cumulativeWheelRevolutions == before.cumulativeWheelRevolutions;
   }
 }
