@@ -8,12 +8,6 @@ export class CSCMeasurementCharacteristic extends bleno.Characteristic {
     super({
       uuid: Constants.CSC_CHARACTERISTICS.CSC_MEASUREMENT_UUID,
       properties: ["notify"],
-      descriptors: [
-        new bleno.Descriptor({
-          uuid: Constants.CLIENT_CHARACTERISTIC_CONFIGURATION,
-          value: Buffer.from([0]),
-        }),
-      ],
     });
     this.updateValueCallback = undefined;
   }
