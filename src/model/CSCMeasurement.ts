@@ -1,5 +1,5 @@
 import Debug from "debug";
-const debug = Debug("bobpp/CSCMeasurement");
+const debug = Debug("bobpp/model/CSCMeasurement");
 
 export class CSCMeasurement {
   private _flags: number;

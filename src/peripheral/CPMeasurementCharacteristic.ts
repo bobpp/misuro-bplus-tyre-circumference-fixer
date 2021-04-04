@@ -1,0 +1,34 @@
+import bleno from "@abandonware/bleno";
+import { Constants } from "../Constants";
+
+export class CPMeasurementChracteristic extends bleno.Characteristic {
+  private updateValueCallback?: (data: Buffer) => void;
+
+  constructor() {
+    super({
+      uuid: Constants.CP_CHARACTERISTICS.CP_MEASUREMENT_UUID,
+      properties: ["notify"],
+      descriptors: [
+        new bleno.Descriptor({
+          uuid: Constants.CLIENT_CHARACTERISTIC_CONFIGURATION,
+          value: Buffer.from([0]),
+        }),
+      ],
+    });
+    this.updateValueCallback = undefined;
+  }
+
+  public onSubscribe(maxValueSize: number, updateValueCallback: (data: Buffer) => void): void {
+    this.updateValueCallback = updateValueCallback;
+  }
+
+  public onUnsubscribe(): void {
+    this.updateValueCallback = undefined;
+  }
+
+  public notifyMeasure(data: Buffer): void {
+    if (this.updateValueCallback) {
+      this.updateValueCallback(data);
+    }
+  }
+}

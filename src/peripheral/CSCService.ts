@@ -1,6 +1,5 @@
 import bleno from "@abandonware/bleno";
 import { Constants } from "../Constants";
-import { CSCMeasurement } from "../model/CSCMeasurement";
 import { CSCFeatureCharacteristic } from "./CSCFeatureCharacteristic";
 import { CSCMeasurementCharacteristic } from "./CSCMeasurementCharacteristic";
 
@@ -14,7 +13,7 @@ export class CSCService extends bleno.PrimaryService {
     });
   }
 
-  public notifyMeasure(measure: CSCMeasurement): void {
-    cscMeasurementCharacteristic.notifyMeasure(measure);
+  public notifyMeasure(data: Buffer): void {
+    cscMeasurementCharacteristic.notifyMeasure(data);
   }
 }

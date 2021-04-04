@@ -1,6 +1,5 @@
 import bleno from "@abandonware/bleno";
 import { Constants } from "../Constants";
-import { CSCMeasurement } from "../model/CSCMeasurement";
 
 export class CSCMeasurementCharacteristic extends bleno.Characteristic {
   private updateValueCallback?: (data: Buffer) => void;
@@ -27,9 +26,9 @@ export class CSCMeasurementCharacteristic extends bleno.Characteristic {
     this.updateValueCallback = undefined;
   }
 
-  public notifyMeasure(measure: CSCMeasurement): void {
+  public notifyMeasure(data: Buffer): void {
     if (this.updateValueCallback) {
-      this.updateValueCallback(measure.toBinaryBuffer());
+      this.updateValueCallback(data);
     }
   }
 }
