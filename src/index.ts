@@ -55,6 +55,7 @@ noble.on("discover", async (peripheral: Peripheral) => {
     {
       let lastStoppedAt = Date.now();
       let beforeOriginalMeasurement: CSCMeasurement | null = null;
+
       cscMeasurement.on("read", async (data: Uint8Array, _isNotification: boolean) => {
         const currentOriginalMeasurement = CSCMeasurement.buildFromRawBinary(data);
         // Check stop
@@ -82,7 +83,7 @@ noble.on("discover", async (peripheral: Peripheral) => {
             debug(
               `${new Date().toUTCString()} ${currentOriginalMeasurement.calculateSpeed(
                 beforeOriginalMeasurement,
-                0.08
+                Constants.MISURO_BPLUS_TYRE_LENGTH
               )} km/h`
             );
           }
@@ -90,10 +91,12 @@ noble.on("discover", async (peripheral: Peripheral) => {
 
         // Main Procedure
         {
-          const currentMeasurement = CSCMeasurement.buildFromRawBinary(data);
-          const currentWheelRev = wheelRevConverter.convertWheelRev(currentMeasurement);
-          currentMeasurement.cumulativeWheelRevolutions = currentWheelRev;
-          cscService.notifyMeasure(currentMeasurement.toBinaryBuffer());
+          if (beforeOriginalMeasurement) {
+            const currentMeasurement = CSCMeasurement.buildFromRawBinary(data);
+            const currentWheelRev = wheelRevConverter.convertWheelRev(currentMeasurement, beforeOriginalMeasurement);
+            currentMeasurement.cumulativeWheelRevolutions = currentWheelRev;
+            cscService.notifyMeasure(currentMeasurement.toBinaryBuffer());
+          }
         }
 
         beforeOriginalMeasurement = currentOriginalMeasurement;
