@@ -143,4 +143,10 @@ export class CSCMeasurement {
   public isStopped(before: CSCMeasurement): boolean {
     return this._cumulativeWheelRevolutions == before.cumulativeWheelRevolutions;
   }
+
+  public removeCrankData(): void {
+    this._flags = this._flags & 0x01;
+    this._cumulativeCrankRevolutions = 0;
+    this._lastCrankEventTime = 0;
+  }
 }

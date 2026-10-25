@@ -95,6 +95,7 @@ noble.on("discover", async (peripheral: Peripheral) => {
             const currentMeasurement = CSCMeasurement.buildFromRawBinary(data);
             const currentWheelRev = wheelRevConverter.convertWheelRev(currentMeasurement, beforeOriginalMeasurement);
             currentMeasurement.cumulativeWheelRevolutions = currentWheelRev;
+            currentMeasurement.removeCrankData();
             cscService.notifyMeasure(currentMeasurement.toBinaryBuffer());
           }
         }
@@ -119,6 +120,10 @@ noble.on("discover", async (peripheral: Peripheral) => {
 
 bleno.on("accept", async (address: string) => {
   console.log(`Connected from ${address}`);
+});
+
+bleno.on("addressChange", async (address: string) => {
+  console.log(`Address: ${address}`);
 });
 
 bleno.on("stateChange", async (state: string) => {
